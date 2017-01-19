@@ -46,6 +46,6 @@ rp.get(`${API_URL}/accounts`, reqOptions)
     }
     rp.get(`${API_URL}/transactions`, R.merge(reqOptions, options)).then(calcTotalChange)
   })
-  .catch((error) => {
+  .catch((resp) => {
     console.log(resp.error)
   })
