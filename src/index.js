@@ -19,17 +19,16 @@ reqOptions = {
 }
 
 const calcTotalChange = ({transactions}) => {
-  let totalChange  = 0.0
-
-  transactions.forEach((transaction) => {
-    if (transaction.amount >= 0) return
+  const totalChange = transactions.reduce((accumulated, transaction) => {
+    // ignore card topups
+    if (transaction.amount >= 0) return accumulated
 
     const majorValue = (transaction.amount / 100) * -1
     const change = parseFloat((Math.ceil(majorValue) - majorValue).toFixed(2))
-    return totalChange += change
-  })
+    return accumulated + change
+  }, 0)
 
-  console.log(`£${totalChange.toFixed(2)}`)
+  return `£${totalChange.toFixed(2)}`
 }
 
 console.log(`Change to be saved for the period ${since} to ${before}`)
@@ -44,7 +43,9 @@ rp.get(`${API_URL}/accounts`, reqOptions)
         before: before.toISOString(),
       }
     }
-    rp.get(`${API_URL}/transactions`, R.merge(reqOptions, options)).then(calcTotalChange)
+    rp.get(`${API_URL}/transactions`, R.merge(reqOptions, options))
+      .then(calcTotalChange)
+      .then(console.log)
   })
   .catch((resp) => {
     console.log(resp.error)
