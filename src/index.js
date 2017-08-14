@@ -43,10 +43,10 @@ rp.get(`${API_URL}/accounts`, reqOptions)
         before: before.toISOString(),
       }
     }
-    rp.get(`${API_URL}/transactions`, R.merge(reqOptions, options))
-      .then(calcTotalChange)
-      .then(console.log)
+    return rp.get(`${API_URL}/transactions`, R.merge(reqOptions, options))
   })
+  .then(calcTotalChange)
+  .then(console.log)
   .catch((resp) => {
     console.log(resp.error)
   })
